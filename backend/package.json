@@ -1,0 +1,4 @@
+{
+    "type": "module",
+    "test": "node --test"
+}
