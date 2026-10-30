@@ -1,16 +1,21 @@
 pipeline {
     agent any
 
+    tools { nodejs 'node20' }   // must match the Name in Manage Jenkins → Tools
+
     options {
         buildDiscarder(logRotator(numToKeepStr: '10'))
         disableConcurrentBuilds()
+        timeout(time: 20, unit: 'MINUTES')
+        timestamps()
     }
 
     environment {
         IMAGE_NAME = 'ss-cabs-frontend'
+        APP_PORT   = '3010'
+        CI         = 'true'
     }
 
-    // Jenkins checks GitHub every ~3 minutes and starts a build when main changes.
     triggers { pollSCM('H/3 * * * *') }
 
     stages {
@@ -18,47 +23,28 @@ pipeline {
             steps {
                 checkout scm
                 sh 'git log -1 --pretty=format:"%h %s (%an)"'
+                sh 'node -v && npm -v && docker --version'
             }
         }
 
         stage('Backend: install') {
-            steps {
-                dir('backend') {
-                    sh 'npm ci'
-                }
-            }
+            steps { dir('backend') { sh 'npm ci' } }
         }
 
         stage('Backend: test') {
-            steps {
-                dir('backend') {
-                    sh 'npm test'
-                }
-            }
+            steps { dir('backend') { sh 'npm test' } }
         }
 
         stage('Frontend: install') {
-            steps {
-                dir('frontend') {
-                    sh 'npm ci'
-                }
-            }
+            steps { dir('frontend') { sh 'npm ci' } }
         }
 
         stage('Frontend: lint') {
-            steps {
-                dir('frontend') {
-                    sh 'npm run lint'
-                }
-            }
+            steps { dir('frontend') { sh 'npm run lint' } }
         }
 
         stage('Frontend: build') {
-            steps {
-                dir('frontend') {
-                    sh 'npm run build'
-                }
-            }
+            steps { dir('frontend') { sh 'npm run build' } }
         }
 
         stage('Frontend: Docker build') {
@@ -68,17 +54,24 @@ pipeline {
                 }
             }
         }
+
+        stage('Deploy') {
+            when { expression { env.GIT_BRANCH == 'origin/main' } }
+            steps {
+                sh '''
+                    docker rm -f ${IMAGE_NAME} || true
+                    docker run -d --name ${IMAGE_NAME} --restart unless-stopped \
+                      -p 127.0.0.1:${APP_PORT}:80 ${IMAGE_NAME}:${BUILD_NUMBER}
+                    sleep 5
+                    curl -fsS http://127.0.0.1:${APP_PORT}/ > /dev/null
+                '''
+            }
+        }
     }
 
     post {
-        success {
-            echo "Build ${BUILD_NUMBER} of ${IMAGE_NAME} succeeded for ${GIT_COMMIT?.take(7)}"
-        }
-        failure {
-            echo 'Pipeline failed, check the stage log above'
-        }
-        cleanup {
-            sh 'docker image prune -f --filter "until=24h" || true'
-        }
+        success { echo "Build ${BUILD_NUMBER} of ${IMAGE_NAME} succeeded for ${env.GIT_COMMIT?.take(7)}" }
+        failure { echo 'Pipeline failed, check the stage log above' }
+        cleanup { sh 'docker image prune -f --filter "until=24h" || true' }
     }
 }
