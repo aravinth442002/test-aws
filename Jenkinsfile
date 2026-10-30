@@ -1,7 +1,7 @@
 pipeline {
     agent any
 
-    tools { nodejs 'node20' }   // must match the Name in Manage Jenkins → Tools
+    tools { nodejs 'node26' }   // must match the Name in Manage Jenkins → Tools
 
     options {
         buildDiscarder(logRotator(numToKeepStr: '10'))
