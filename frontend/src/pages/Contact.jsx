@@ -1,7 +1,5 @@
 import { useState } from 'react'
 import { FaPhone, FaWhatsapp, FaEnvelope, FaMapMarkerAlt } from 'react-icons/fa'
-import SectionHeader from '../components/shared/SectionHeader'
-import Button from '../components/shared/Button'
 import emailjs from '@emailjs/browser'
 import { toast } from 'react-toastify'
 

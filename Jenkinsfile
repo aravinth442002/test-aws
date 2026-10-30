@@ -1,71 +1,84 @@
 pipeline {
-  agent any
+    agent any
 
-  environment {
-    AWS_REGION  = 'ap-south-1'
-    LAMBDA_NAME = 'YOUR_LAMBDA_FUNCTION_NAME'   // the function name, not the URL path
-    IMAGE_NAME  = 'frontend-app'
-  }
-
-  triggers { pollSCM('H/2 * * * *') }   // checks the repo every ~2 minutes
-
-  stages {
-    stage('Checkout') {
-      steps { checkout scm }
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '10'))
+        disableConcurrentBuilds()
     }
 
-    stage('Backend: test') {
-      steps {
-        dir('backend') {
-          sh 'npm ci'
-          sh 'npm test'
+    environment {
+        IMAGE_NAME = 'ss-cabs-frontend'
+    }
+
+    // Jenkins checks GitHub every ~3 minutes and starts a build when main changes.
+    triggers { pollSCM('H/3 * * * *') }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+                sh 'git log -1 --pretty=format:"%h %s (%an)"'
+            }
         }
-      }
-    }
 
-    stage('Frontend: test') {
-      steps {
-        dir('frontend') {
-          sh 'npm ci'
-          sh 'npm test --if-present'
+        stage('Backend: install') {
+            steps {
+                dir('backend') {
+                    sh 'npm ci'
+                }
+            }
         }
-      }
-    }
 
-    stage('Frontend: Docker build') {
-      steps {
-        dir('frontend') {
-          sh "docker build -t ${IMAGE_NAME}:${BUILD_NUMBER} -t ${IMAGE_NAME}:latest ."
+        stage('Backend: test') {
+            steps {
+                dir('backend') {
+                    sh 'npm test'
+                }
+            }
         }
-      }
-    }
 
-    stage('Deploy Lambda') {
-      when { expression { env.GIT_BRANCH?.endsWith('main') } }
-      steps {
-        withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-creds']]) {
-          sh '''
-            cd backend
-            npm ci --omit=dev
-            zip -qr ../function.zip . -x "test/*"
-            cd ..
-            aws lambda update-function-code --function-name $LAMBDA_NAME --zip-file fileb://function.zip --region $AWS_REGION
-            aws lambda wait function-updated --function-name $LAMBDA_NAME --region $AWS_REGION
-          '''
+        stage('Frontend: install') {
+            steps {
+                dir('frontend') {
+                    sh 'npm ci'
+                }
+            }
         }
-      }
+
+        stage('Frontend: lint') {
+            steps {
+                dir('frontend') {
+                    sh 'npm run lint'
+                }
+            }
+        }
+
+        stage('Frontend: build') {
+            steps {
+                dir('frontend') {
+                    sh 'npm run build'
+                }
+            }
+        }
+
+        stage('Frontend: Docker build') {
+            steps {
+                dir('frontend') {
+                    sh "docker build -t ${IMAGE_NAME}:${BUILD_NUMBER} -t ${IMAGE_NAME}:latest ."
+                }
+            }
+        }
     }
 
-    stage('Deploy frontend container') {
-      when { expression { env.GIT_BRANCH?.endsWith('main') } }
-      steps {
-        sh "docker rm -f frontend || true"
-        sh "docker run -d --name frontend -p 8080:80 ${IMAGE_NAME}:latest"
-      }
+    post {
+        success {
+            echo "Build ${BUILD_NUMBER} of ${IMAGE_NAME} succeeded for ${GIT_COMMIT?.take(7)}"
+        }
+        failure {
+            echo 'Pipeline failed, check the stage log above'
+        }
+        cleanup {
+            sh 'docker image prune -f --filter "until=24h" || true'
+        }
     }
-  }
-
-  post {
-    failure { echo 'Pipeline failed, check the stage log above' }
-  }
 }
