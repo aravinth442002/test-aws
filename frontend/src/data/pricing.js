@@ -2,7 +2,7 @@ export const pricing = [
   {
     id: 1,
     service: "City Ride",
-    baseRate: "₹26",
+    baseRate: "₹150",
     unit: "/ km",
     minCharge: "Min ₹100",
     features: ["Point A to B", "AC Vehicles", "Trained Drivers"]
