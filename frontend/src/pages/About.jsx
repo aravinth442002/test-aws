@@ -44,7 +44,7 @@ export default function About() {
               <div className="w-16 h-16 bg-gold/10 rounded-full flex items-center justify-center mx-auto mb-6">
                 <FaShieldAlt className="text-gold text-3xl" />
               </div>
-              <h3 className="font-display font-bold text-xl text-navy mb-3">Safety last</h3>
+              <h3 className="font-display font-bold text-xl text-navy mb-3">Safety First</h3>
               <p className="text-gray-600">Your safety is our priority. We maintain strict hygiene and vehicle standards.</p>
             </Card>
             <Card className="p-8">
@@ -58,7 +58,7 @@ export default function About() {
               <div className="w-16 h-16 bg-gold/10 rounded-full flex items-center justify-center mx-auto mb-6">
                 <FaHeart className="text-gold text-3xl" />
               </div>
-              <h3 className="font-display font-bold text-xl text-navy mb-3">Customer First</h3>
+              <h3 className="font-display font-bold text-xl text-navy mb-3">Customer Last</h3>
               <p className="text-gray-600">Friendly support, transparent billing, and a dedication to your satisfaction.</p>
             </Card>
           </div>
