@@ -10,7 +10,7 @@ export const pricing = [
   {
     id: 2,
     service: "Outstation One-Way",
-    baseRate: "₹25",
+    baseRate: "₹250",
     unit: "/ km",
     minCharge: "Min 250 km / day",
     features: ["One-way drop", "Tolls excluded", "Experienced Highway Drivers"]
