@@ -15,7 +15,7 @@ pipeline {
         APP_PORT   = '3010'
         CI         = 'true'
         AWS_REGION = 'us-east-1'
-        API_URL    = ' https://hie94mw2ae.execute-api.us-east-1.amazonaws.com/default/imageHandlerFunctionTwo/{proxy+}'
+        API_URL    = 'https://hie94mw2ae.execute-api.us-east-1.amazonaws.com/default/imageHandlerFunctionTwo/{proxy+}'
     }
 
     triggers { pollSCM('H/1 * * * *') }
@@ -85,9 +85,9 @@ pipeline {
                 sh '''
                     export AWS_DEFAULT_REGION=${AWS_REGION}
                     aws lambda update-function-code \
-                      --function-name imageHandlerFunction \
+                      --function-name imageHandlerFunctionTwo \
                       --zip-file fileb://function.zip --publish
-                    aws lambda wait function-updated --function-name imageHandlerFunction
+                    aws lambda wait function-updated --function-name imageHandlerFunctionTwo
                 '''
             }
             sh 'curl -fsS -X OPTIONS "${API_URL}" -o /dev/null'   // smoke test (CORS preflight)
