@@ -10,7 +10,7 @@ export const pricing = [
   {
     id: 2,
     service: "Outstation One-Way",
-    baseRate: "₹250",
+    baseRate: "₹2500",
     unit: "/ km",
     minCharge: "Min 250 km / day",
     features: ["One-way drop", "Tolls excluded", "Experienced Highway Drivers"]
@@ -18,7 +18,7 @@ export const pricing = [
   {
     id: 3,
     service: "Outstation Round Trip",
-    baseRate: "₹130",
+    baseRate: "₹1300",
     unit: "/ km",
     minCharge: "Min 250 km / day",
     features: ["Return journey", "Driver allowance ₹300/day", "Tolls excluded"]
