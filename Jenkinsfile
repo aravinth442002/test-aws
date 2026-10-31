@@ -14,6 +14,8 @@ pipeline {
         IMAGE_NAME = 'ss-cabs-frontend'
         APP_PORT   = '3010'
         CI         = 'true'
+        AWS_REGION = 'us-east-1'
+        API_URL    = ' https://hie94mw2ae.execute-api.us-east-1.amazonaws.com/default/imageHandlerFunctionTwo/{proxy+}'
     }
 
     triggers { pollSCM('H/1 * * * *') }
