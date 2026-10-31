@@ -67,6 +67,31 @@ pipeline {
                 '''
             }
         }
+
+        stage('Deploy Lambda') {
+            when { expression { env.GIT_BRANCH == 'origin/main' } }
+         steps {
+        dir('backend') {
+            sh '''
+                rm -f function.zip
+                npm ci --omit=dev
+                zip -qr function.zip . -x "*.test.js" "test/*" "*.zip"
+            '''
+            withCredentials([usernamePassword(credentialsId: 'aws-lambda-deployer',
+                             usernameVariable: 'AWS_ACCESS_KEY_ID',
+                             passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                sh '''
+                    export AWS_DEFAULT_REGION=${AWS_REGION}
+                    aws lambda update-function-code \
+                      --function-name imageHandlerFunction \
+                      --zip-file fileb://function.zip --publish
+                    aws lambda wait function-updated --function-name imageHandlerFunction
+                '''
+            }
+            sh 'curl -fsS -X OPTIONS "${API_URL}" -o /dev/null'   // smoke test (CORS preflight)
+        }
+    }
+}
     }
 
     post {
