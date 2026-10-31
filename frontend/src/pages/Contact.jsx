@@ -220,7 +220,7 @@ export default function Contact() {
                     </div>
                     <div>
                       <p className="text-gray-400 text-sm mb-1">Call Us (24/7)</p>
-                      <a href="tel:+916381304990" className="text-lg font-semibold hover:text-gold transition-colors">+91 6381304990</a>
+                      <a href="tel:+918248954426" className="text-lg font-semibold hover:text-gold transition-colors">+91 8248954426</a>
                     </div>
                   </li>
                   <li className="flex items-start gap-4">
