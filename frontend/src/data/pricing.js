@@ -18,7 +18,7 @@ export const pricing = [
   {
     id: 3,
     service: "Outstation Round Trip",
-    baseRate: "₹13",
+    baseRate: "₹130",
     unit: "/ km",
     minCharge: "Min 250 km / day",
     features: ["Return journey", "Driver allowance ₹300/day", "Tolls excluded"]
@@ -26,7 +26,7 @@ export const pricing = [
   {
     id: 4,
     service: "Airport Transfer (Zone A)",
-    baseRate: "₹500",
+    baseRate: "₹1000",
     unit: " Flat",
     minCharge: "Up to 15 km",
     features: ["Direct Airport Drop", "No hidden fees", "Sedan Vehicle"]
