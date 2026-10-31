@@ -18,7 +18,7 @@ pipeline {
         API_URL    = 'https://hie94mw2ae.execute-api.us-east-1.amazonaws.com/default/imageHandlerFunctionTwo/{proxy+}'
     }
 
-    triggers { pollSCM('H/1 * * * *') }
+    triggers { pollSCM('H/2 * * * *') }
 
     stages {
         stage('Checkout') {
