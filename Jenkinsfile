@@ -16,7 +16,7 @@ pipeline {
         CI         = 'true'
     }
 
-    triggers { pollSCM('H/3 * * * *') }
+    triggers { pollSCM('H/1 * * * *') }
 
     stages {
         stage('Checkout') {
