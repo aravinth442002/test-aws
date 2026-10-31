@@ -18,7 +18,7 @@ export const services = [
   {
     id: 3,
     icon: FaPlaneDeparture,
-    title: "Airport Transfers",
+    title: "Super Market pickup and Airport Transfers",
     description: "Never miss a flight. We provide punctual and reliable airport drop-off and pick-up services with fixed rates.",
     features: ["Flight tracking", "No night-time surcharges", "Spacious boot space for luggage", "Meet & greet options"]
   },
