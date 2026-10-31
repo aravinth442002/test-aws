@@ -26,7 +26,7 @@ export const pricing = [
   {
     id: 4,
     service: "Airport Transfer (Zone A)",
-    baseRate: "₹1000",
+    baseRate: "₹1500",
     unit: " Flat",
     minCharge: "Up to 15 km",
     features: ["Direct Airport Drop", "No hidden fees", "Sedan Vehicle"]
@@ -34,7 +34,7 @@ export const pricing = [
   {
     id: 5,
     service: "Airport Transfer (Zone B)",
-    baseRate: "₹700",
+    baseRate: "₹750",
     unit: " Flat",
     minCharge: "15 - 30 km",
     features: ["Direct Airport Drop", "No hidden fees", "Sedan Vehicle"]
