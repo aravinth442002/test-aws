@@ -192,7 +192,7 @@ export default function Contact() {
 
                   {/* Passengers */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Number of Passengers</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Number of Members</label>
                     <input type="number" min="1" max="10" name="passengers" value={formData.passengers} onChange={handleChange} maxLength={3} className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gold focus:border-transparent outline-none" />
                   </div>
                 </div>
