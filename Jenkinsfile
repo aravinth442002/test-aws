@@ -63,7 +63,7 @@ pipeline {
                 sh '''
                     docker rm -f ${IMAGE_NAME} || true
                     docker run -d --name ${IMAGE_NAME} --restart unless-stopped \
-                      -p 127.0.0.1:${APP_PORT}:80 ${IMAGE_NAME}:${BUILD_NUMBER}
+                      -p ${APP_PORT}:80 ${IMAGE_NAME}:${BUILD_NUMBER}
                     sleep 5
                     curl -fsS http://127.0.0.1:${APP_PORT}/ > /dev/null
                 '''
