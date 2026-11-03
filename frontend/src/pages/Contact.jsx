@@ -131,7 +131,7 @@ export default function Contact() {
                   {/* Full Name */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Full Name *</label>
-                    <input type="text" name="fullName" value={formData.fullName} onChange={handleChange} maxLength={20} className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gold focus:border-transparent outline-none" placeholder="Aravinth gurusaamy" />
+                    <input type="text" name="fullName" value={formData.fullName} onChange={handleChange} maxLength={20} className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gold focus:border-transparent outline-none" placeholder="Aravinth saminathan" />
                     {errors.fullName && <p className="text-red-500 text-sm mt-1">{errors.fullName}</p>}
                   </div>
 
