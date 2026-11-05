@@ -66,7 +66,7 @@ export const handler = async (event) => {
   const jsonHeaders = {
     "Content-Type": "application/json",
     "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "GET, POST,DELETE, OPTIONS",
+    "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
     "Access-Control-Allow-Headers": "*",
   };
 
@@ -274,13 +274,6 @@ export const handler = async (event) => {
     }
   }
 
-  return {
-    statusCode: 405,
-    headers: jsonHeaders,
-    body: JSON.stringify({ error: "Method not allowed" }),
-  };
-};
-
   // ---------------------------------------------------------------------------
   // 4. DELETE /images/{id} (Delete Image by ID)
   // ---------------------------------------------------------------------------
@@ -329,3 +322,10 @@ export const handler = async (event) => {
       };
     }
   }
+
+  return {
+    statusCode: 405,
+    headers: jsonHeaders,
+    body: JSON.stringify({ error: "Method not allowed" }),
+  };
+};
