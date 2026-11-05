@@ -3,6 +3,7 @@ import {
   PutObjectCommand,
   GetObjectCommand,
   ListObjectsV2Command,
+  DeleteObjectCommand,
 } from "@aws-sdk/client-s3";
 import { randomUUID } from "crypto";
 
@@ -65,7 +66,7 @@ export const handler = async (event) => {
   const jsonHeaders = {
     "Content-Type": "application/json",
     "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+    "Access-Control-Allow-Methods": "GET, POST,DELETE, OPTIONS",
     "Access-Control-Allow-Headers": "*",
   };
 
@@ -279,3 +280,52 @@ export const handler = async (event) => {
     body: JSON.stringify({ error: "Method not allowed" }),
   };
 };
+
+  // ---------------------------------------------------------------------------
+  // 4. DELETE /images/{id} (Delete Image by ID)
+  // ---------------------------------------------------------------------------
+  if (method === "DELETE" && imageId) {
+    try {
+      // Trailing "." makes the match exact on ID (extension is unknown),
+      // so a partial ID can never match and delete a different image.
+      const listData = await s3.send(
+        new ListObjectsV2Command({
+          Bucket: BUCKET_NAME,
+          Prefix: `images/${imageId}.`,
+        })
+      );
+
+      const fileObj = (listData.Contents || []).find((obj) => !obj.Key.endsWith("/"));
+      if (!fileObj) {
+        return {
+          statusCode: 404,
+          headers: jsonHeaders,
+          body: JSON.stringify({ error: `Image not found with ID '${imageId}'` }),
+        };
+      }
+
+      await s3.send(
+        new DeleteObjectCommand({
+          Bucket: BUCKET_NAME,
+          Key: fileObj.Key,
+        })
+      );
+
+      return {
+        statusCode: 200,
+        headers: jsonHeaders,
+        body: JSON.stringify({
+          message: "Image deleted successfully!",
+          id: imageId,
+          fileName: fileObj.Key.replace("images/", ""),
+        }),
+      };
+    } catch (err) {
+      console.error("Delete error:", err);
+      return {
+        statusCode: 500,
+        headers: jsonHeaders,
+        body: JSON.stringify({ error: err.message }),
+      };
+    }
+  }
